@@ -1,0 +1,13 @@
+# gradle
+build
+run
+.gradle
+
+# vs code
+.vscode
+
+# Files from Forge MDK
+forge*changelog.txt
+
+# mac
+.DS_Store
