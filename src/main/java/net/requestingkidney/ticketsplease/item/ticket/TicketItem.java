@@ -24,7 +24,7 @@ public class TicketItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext pContext) {
-        if (pContext.getLevel().isClientSide()){
+        if (!pContext.getLevel().isClientSide()){
             BlockPos positionClicked = pContext.getClickedPos();
             Level level = pContext.getLevel();
             BlockState blockState = level.getBlockState(positionClicked);
@@ -44,7 +44,7 @@ public class TicketItem extends Item {
                 ItemStack signedTicketItemStack = new ItemStack(ModItems.SIGNED_TICKET.get());
                 addNbtDataToSignedTicket(signedTicketItemStack);
                 inventory.removeItem(ticketItemstack);
-                inventory.setItem(ticketSlot, signedTicketItemStack);
+                inventory.add(ticketSlot, signedTicketItemStack);
             }
 
         }

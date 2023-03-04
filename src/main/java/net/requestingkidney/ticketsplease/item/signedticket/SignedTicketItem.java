@@ -20,7 +20,7 @@ public class SignedTicketItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        if (pLevel.isClientSide() && (pPlayer.getItemInHand(pUsedHand).hasTag() && (pPlayer.getItemInHand(pUsedHand).getTag() != null))){
+        if (!pLevel.isClientSide() && (pPlayer.getItemInHand(pUsedHand).hasTag() && (pPlayer.getItemInHand(pUsedHand).getTag() != null))){
             pPlayer.sendMessage(new TextComponent("ID: " + pPlayer.getItemInHand(pUsedHand).getTag().getUUID("id").toString()), pPlayer.getUUID());
             
         }
