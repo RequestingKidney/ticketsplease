@@ -1,14 +1,14 @@
-# gradle
-build
-run
-bin
-.gradle
+#idea
+/.idea
+/*/out
+/classes
+*.iml
 
-# vs code
-.vscode
+#gradle
+/build
+/.gradle
+/*/build
+/*/.gradle
 
-# Files from Forge MDK
-forge*changelog.txt
-
-# mac
-.DS_Store
+/logs/
+/run

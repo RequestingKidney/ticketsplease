@@ -1,7 +1,5 @@
 package net.requestingkidney.ticketsplease.block;
 
-import com.google.common.base.Supplier;
-import com.simibubi.create.Create;
 import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.contraptions.components.actors.SeatInteractionBehaviour;
