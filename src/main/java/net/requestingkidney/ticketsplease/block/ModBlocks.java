@@ -2,6 +2,7 @@ package net.requestingkidney.ticketsplease.block;
 
 import com.google.common.base.Supplier;
 import com.simibubi.create.Create;
+import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.contraptions.components.actors.SeatInteractionBehaviour;
 import com.simibubi.create.content.contraptions.components.actors.SeatMovementBehaviour;
@@ -15,10 +16,7 @@ import static com.simibubi.create.AllMovementBehaviours.movementBehaviour;
 import static com.simibubi.create.foundation.data.TagGen.axeOnly;
 import static com.simibubi.create.content.logistics.block.display.AllDisplayBehaviours.assignDataBehaviour;
 
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-
 import net.minecraft.core.Registry;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import static net.requestingkidney.ticketsplease.TicketsPlease.REGISTRATE;
 import net.requestingkidney.ticketsplease.block.ticketseat.TicketSeatBlock;
@@ -43,8 +41,9 @@ public class ModBlocks {
                     .texture("2", p.modLoc("block/seat/side_" + colourName)));
             })
             .onRegisterAfter(Registry.ITEM_REGISTRY, v -> TooltipHelper.referTo(v, "block.create.brown_seat"))
+            .tag(AllBlockTags.SEATS.tag)
             .item()
-            .tab(NonNullSupplier.lazy(() -> CreativeModeTab.TAB_MISC))
+            .tag(AllItemTags.SEATS.tag)
             .build()
             .register();
     });

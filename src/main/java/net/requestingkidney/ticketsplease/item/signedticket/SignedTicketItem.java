@@ -3,11 +3,13 @@ package net.requestingkidney.ticketsplease.item.signedticket;
 import com.simibubi.create.AllBlocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class SignedTicketItem extends Item {
 
@@ -17,22 +19,11 @@ public class SignedTicketItem extends Item {
 
 
     @Override
-    public InteractionResult useOn(UseOnContext pContext) {
-        if (pContext.getLevel().isClientSide()){
-            BlockPos positionClicked = pContext.getClickedPos();
-            Block block = pContext.getLevel().getBlockState(positionClicked).getBlock();
-
-            if (AllBlocks.SEATS.contains(block)) {
-                Player player = pContext.getPlayer();
-
-                if(player == null){
-                    return super.useOn(pContext);
-                }
-                
-            }
-
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+        if (pLevel.isClientSide() && (pPlayer.getItemInHand(pUsedHand).hasTag() && (pPlayer.getItemInHand(pUsedHand).getTag() != null))){
+            pPlayer.sendMessage(new TextComponent("ID: " + pPlayer.getItemInHand(pUsedHand).getTag().getUUID("id").toString()), pPlayer.getUUID());
+            
         }
-        return super.useOn(pContext);
-     }
-
+        return super.use(pLevel, pPlayer, pUsedHand);
+    }
 }

@@ -44,8 +44,7 @@ public class TicketItem extends Item {
                 ItemStack signedTicketItemStack = new ItemStack(ModItems.SIGNED_TICKET.get());
                 addNbtDataToSignedTicket(signedTicketItemStack);
                 inventory.removeItem(ticketItemstack);
-                inventory.add(ticketSlot, signedTicketItemStack);
-
+                inventory.setItem(ticketSlot, signedTicketItemStack);
             }
 
         }
