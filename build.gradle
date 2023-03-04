@@ -156,6 +156,7 @@ repositories {
         name = 'tterrag maven'
         url = 'https://maven.tterrag.com/'
     }
+    mavenLocal()
 }
 
 dependencies {
@@ -167,6 +168,7 @@ dependencies {
     implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
     implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    jarJar(group: 'com.tterrag.registrate', name: 'Registrate', version: "[MC1.19.3,MC1.20)")
 
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
@@ -203,6 +205,16 @@ jar {
 jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
+
+jarJar.enable()
+
+reobf {
+    jarJar { }
+}
+
+tasks.jarJar.finalizedBy('reobfJarJar')
+
+
 
 publishing {
     publications {

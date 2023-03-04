@@ -1,3 +1,5 @@
 {
-    "item.ticketsplease.ticket": "Ticket"
+    "item.ticketsplease.ticket": "Ticket",
+    "item.ticketsplease.signedticket": "Travel Ticket",
+    "block.ticketsplease.ticketseat": "Ticket Seat"
 }
