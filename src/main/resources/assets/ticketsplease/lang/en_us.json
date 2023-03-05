@@ -1,5 +1,20 @@
 {
     "item.ticketsplease.ticket": "Ticket",
     "item.ticketsplease.signedticket": "Travel Ticket",
-    "block.ticketsplease.ticketseat": "Ticket Seat"
+    "block.ticketsplease.black_ticketseat": "Black Ticketed Seat",
+    "block.ticketsplease.blue_ticketseat": "Blue Ticketed Seat",
+    "block.ticketsplease.brown_ticketseat": "Brown Ticketed Seat",
+    "block.ticketsplease.cyan_ticketseat": "Cyan Ticketed Seat",
+    "block.ticketsplease.gray_ticketseat": "Gray Ticketed Seat",
+    "block.ticketsplease.green_ticketseat": "Green Ticketed Seat",
+    "block.ticketsplease.light_blue_ticketseat": "Light Blue Ticketed Seat",
+    "block.ticketsplease.light_gray_ticketseat": "Light Gray Ticketed Seat",
+    "block.ticketsplease.lime_ticketseat": "Lime Ticketed Seat",
+    "block.ticketsplease.magenta_ticketseat": "Magenta Ticketed Seat",
+    "block.ticketsplease.orange_ticketseat": "Orange Ticketed Seat",
+    "block.ticketsplease.pink_ticketseat": "Pink Ticketed Seat",
+    "block.ticketsplease.purple_ticketseat": "Purple Ticketed Seat",
+    "block.ticketsplease.red_ticketseat": "Red Ticketed Seat",
+    "block.ticketsplease.white_ticketseat": "White Ticketed Seat",
+    "block.ticketsplease.yellow_ticketseat": "Yellow Ticketed Seat"
 }
