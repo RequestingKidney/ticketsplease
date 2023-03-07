@@ -66,6 +66,7 @@ public class TicketItem extends Item {
                     List<Long> idList = new ArrayList<>();
                     idList.add(itemId);
                     nbtBlockData.putLongArray("idList", idList);
+                    nbtBlockData.putUUID("ownerId", player.getUUID());
                     TicketSeatBlockEntity ticketSeatBlockEntity = (TicketSeatBlockEntity) level.getBlockEntity(positionClicked);
                     if (ticketSeatBlockEntity != null) {
                         ticketSeatBlockEntity.load(nbtBlockData);
@@ -78,7 +79,7 @@ public class TicketItem extends Item {
                 if (ticketSeatBlockEntity != null)
                     ticketSeatBlockEntity.saveAdditional(nbtBlockData);
 
-                if (nbtBlockData.getUUID("ownerId") == player.getUUID()) {
+                if (nbtBlockData.getUUID("ownerId").equals(player.getUUID())) {
                     if (inventory.getFreeSlot() != -1 || ticketItemstack.getCount() == 1) {
                         ItemStack signedTicketItemStack = new ItemStack(ModItems.SIGNED_TICKET.get());
                         int ticketSlot = inventory.findSlotMatchingItem(ticketItemstack);
@@ -91,7 +92,6 @@ public class TicketItem extends Item {
                         inventory.removeItem(ticketSlot, 1);
                         inventory.add(signedTicketItemStack);
 
-                        ticketSeatBlockEntity.saveAdditional(nbtBlockData);
                         ArrayList<Long> temp = new ArrayList<>();
 
                         for (long id : nbtBlockData.getLongArray("idList"))
@@ -99,8 +99,10 @@ public class TicketItem extends Item {
                         temp.add(itemId);
 
                         nbtBlockData.putLongArray("idList", temp);
-                        ticketSeatBlockEntity.load(nbtBlockData);
-                        ticketSeatBlockEntity.setChanged();
+                        if(ticketSeatBlockEntity != null) {
+                            ticketSeatBlockEntity.load(nbtBlockData);
+                            ticketSeatBlockEntity.setChanged();
+                        }
                     }
                 }
             }
