@@ -1,3 +1,5 @@
+name: Manual Build and Publish Artifact
+
 on:
   workflow_dispatch:
 
