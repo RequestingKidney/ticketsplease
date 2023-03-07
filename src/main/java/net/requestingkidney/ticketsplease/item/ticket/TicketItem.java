@@ -35,23 +35,23 @@ public class TicketItem extends Item {
             BlockPos positionClicked = pContext.getClickedPos();
             Level level = pContext.getLevel();
             BlockState seatBlockState = level.getBlockState(positionClicked);
-            Block seatBlock = seatBlockState.getBlock();
+            Block clickedBlock = seatBlockState.getBlock();
 
-            if (AllBlocks.SEATS.contains(seatBlock)) {
-                Player player = pContext.getPlayer();
+            Player player = pContext.getPlayer();
 
-                if(player == null){
-                    return super.useOn(pContext);
-                }
+            if(player == null){
+                return super.useOn(pContext);
+            }
 
-                Inventory inventory = player.getInventory();
-                ItemStack ticketItemstack = pContext.getItemInHand();
+            Inventory inventory = player.getInventory();
+            ItemStack ticketItemstack = pContext.getItemInHand();
+
+            if (AllBlocks.SEATS.contains(clickedBlock)) {
 
                 if (inventory.getFreeSlot() != -1 || ticketItemstack.getCount() == 1) {
-
                     ItemStack signedTicketItemStack = new ItemStack(ModItems.SIGNED_TICKET.get());
                     int ticketSlot = inventory.findSlotMatchingItem(ticketItemstack);
-                    BlockState ticketSeatBlockState = ModBlocks.TICKET_SEATS.get(((SeatBlock)seatBlock).getColor()).getDefaultState();
+                    BlockState ticketSeatBlockState = ModBlocks.TICKET_SEATS.get(((SeatBlock)clickedBlock).getColor()).getDefaultState();
                     level.setBlockAndUpdate(positionClicked, ticketSeatBlockState);
 
                     CompoundTag nbtItemData = new CompoundTag();
@@ -63,7 +63,7 @@ public class TicketItem extends Item {
                     inventory.add(signedTicketItemStack);
 
                     CompoundTag nbtBlockData = new CompoundTag();
-                    List<Long> idList = new ArrayList<Long>();
+                    List<Long> idList = new ArrayList<>();
                     idList.add(itemId);
                     nbtBlockData.putLongArray("idList", idList);
                     TicketSeatBlockEntity ticketSeatBlockEntity = (TicketSeatBlockEntity) level.getBlockEntity(positionClicked);
@@ -72,7 +72,37 @@ public class TicketItem extends Item {
                         ticketSeatBlockEntity.setChanged();
                     }
                 }
+            } else if (ModBlocks.TICKET_SEATS.contains(clickedBlock)) {
+                CompoundTag nbtBlockData = new CompoundTag();
+                TicketSeatBlockEntity ticketSeatBlockEntity = (TicketSeatBlockEntity) level.getBlockEntity(positionClicked);
+                if (ticketSeatBlockEntity != null)
+                    ticketSeatBlockEntity.saveAdditional(nbtBlockData);
 
+                if (nbtBlockData.getUUID("ownerId") == player.getUUID()) {
+                    if (inventory.getFreeSlot() != -1 || ticketItemstack.getCount() == 1) {
+                        ItemStack signedTicketItemStack = new ItemStack(ModItems.SIGNED_TICKET.get());
+                        int ticketSlot = inventory.findSlotMatchingItem(ticketItemstack);
+
+                        CompoundTag nbtItemData = new CompoundTag();
+                        long itemId = rand.nextLong();
+                        nbtItemData.putLong("id", itemId);
+                        signedTicketItemStack.setTag(nbtItemData);
+
+                        inventory.removeItem(ticketSlot, 1);
+                        inventory.add(signedTicketItemStack);
+
+                        ticketSeatBlockEntity.saveAdditional(nbtBlockData);
+                        ArrayList<Long> temp = new ArrayList<>();
+
+                        for (long id : nbtBlockData.getLongArray("idList"))
+                            temp.add(id);
+                        temp.add(itemId);
+
+                        nbtBlockData.putLongArray("idList", temp);
+                        ticketSeatBlockEntity.load(nbtBlockData);
+                        ticketSeatBlockEntity.setChanged();
+                    }
+                }
             }
         }
         return super.useOn(pContext);

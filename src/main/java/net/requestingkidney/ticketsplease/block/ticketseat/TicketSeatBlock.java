@@ -48,7 +48,6 @@ public class TicketSeatBlock extends SeatBlock implements EntityBlock {
                         }
                     }
                 }
-
             }
         }
         return InteractionResult.PASS;
