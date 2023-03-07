@@ -1,5 +1,7 @@
 package net.requestingkidney.ticketsplease.item.ticket;
 
+import com.mojang.logging.LogUtils;
+import com.simibubi.create.content.contraptions.components.actors.SeatBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
@@ -11,26 +13,31 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.requestingkidney.ticketsplease.block.ModBlocks;
+import net.requestingkidney.ticketsplease.block.entity.ticketseat.TicketSeatBlockEntity;
 import net.requestingkidney.ticketsplease.item.ModItems;
 
-import java.util.UUID;
+import java.util.*;
 
 import com.simibubi.create.AllBlocks;
+import org.slf4j.Logger;
 
 public class TicketItem extends Item {
+    private static final Logger LOGGER = LogUtils.getLogger();
     public TicketItem(Properties pProperties) {
         super(pProperties);
     }
 
     @Override
     public InteractionResult useOn(UseOnContext pContext) {
+        Random rand = new Random();
         if (!pContext.getLevel().isClientSide()){
             BlockPos positionClicked = pContext.getClickedPos();
             Level level = pContext.getLevel();
-            BlockState blockState = level.getBlockState(positionClicked);
-            Block block = blockState.getBlock();
+            BlockState seatBlockState = level.getBlockState(positionClicked);
+            Block seatBlock = seatBlockState.getBlock();
 
-            if (AllBlocks.SEATS.contains(block)) {
+            if (AllBlocks.SEATS.contains(seatBlock)) {
                 Player player = pContext.getPlayer();
 
                 if(player == null){
@@ -39,25 +46,36 @@ public class TicketItem extends Item {
 
                 Inventory inventory = player.getInventory();
                 ItemStack ticketItemstack = pContext.getItemInHand();
-                int ticketSlot = inventory.findSlotMatchingItem(ticketItemstack);
 
-                ItemStack signedTicketItemStack = new ItemStack(ModItems.SIGNED_TICKET.get());
-                addNbtDataToSignedTicket(signedTicketItemStack);
-                inventory.removeItem(ticketItemstack);
-                inventory.add(ticketSlot, signedTicketItemStack);
+                if (inventory.getFreeSlot() != -1 || ticketItemstack.getCount() == 1) {
+
+                    ItemStack signedTicketItemStack = new ItemStack(ModItems.SIGNED_TICKET.get());
+                    int ticketSlot = inventory.findSlotMatchingItem(ticketItemstack);
+                    BlockState ticketSeatBlockState = ModBlocks.TICKET_SEATS.get(((SeatBlock)seatBlock).getColor()).getDefaultState();
+                    level.setBlockAndUpdate(positionClicked, ticketSeatBlockState);
+
+                    CompoundTag nbtItemData = new CompoundTag();
+                    long itemId = rand.nextLong();
+                    nbtItemData.putLong("id", itemId);
+                    signedTicketItemStack.setTag(nbtItemData);
+
+                    inventory.removeItem(ticketSlot, 1);
+                    inventory.add(signedTicketItemStack);
+
+                    CompoundTag nbtBlockData = new CompoundTag();
+                    List<Long> idList = new ArrayList<Long>();
+                    idList.add(itemId);
+                    nbtBlockData.putLongArray("idList", idList);
+                    TicketSeatBlockEntity ticketSeatBlockEntity = (TicketSeatBlockEntity) level.getBlockEntity(positionClicked);
+                    if (ticketSeatBlockEntity != null) {
+                        ticketSeatBlockEntity.load(nbtBlockData);
+                        ticketSeatBlockEntity.setChanged();
+                    }
+                }
+
             }
-
         }
         return super.useOn(pContext);
-    }
-
-    private void addNbtDataToSignedTicket(ItemStack signedTicketItemStack){
-        CompoundTag nbtData = new CompoundTag();
-        UUID uuid = UUID.randomUUID();
-        nbtData.putUUID("id", uuid);
-
-        signedTicketItemStack.setTag(nbtData);
-
     }
 
 }

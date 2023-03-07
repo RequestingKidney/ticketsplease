@@ -1,45 +1,61 @@
 package net.requestingkidney.ticketsplease.block.ticketseat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.contraptions.components.actors.SeatBlock;
 
-import net.minecraft.util.StringRepresentable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+
+import net.minecraft.world.phys.BlockHitResult;
+import net.requestingkidney.ticketsplease.block.entity.ticketseat.TicketSeatBlockEntity;
+import org.slf4j.Logger;
+
+import java.util.Arrays;
 
 
-public class TicketSeatBlock extends SeatBlock {
+public class TicketSeatBlock extends SeatBlock implements EntityBlock {
 
-    //public static final EnumProperty<TicketIds> TICKET_IDS = EnumProperty.create("ticketids", TicketIds.class);
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public TicketSeatBlock(Properties pProperties, DyeColor color, boolean inCreativeTab) {
         super(pProperties, color, inCreativeTab);
     }
-    
+
     @Override
-    protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
-        //pBuilder.add(TICKET_IDS);
-        super.createBlockStateDefinition(pBuilder);
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult p_225533_6_) {
+        if(!world.isClientSide()) {
+            TicketSeatBlockEntity ticketSeatBlockEntity = (TicketSeatBlockEntity) world.getBlockEntity(pos);
+            if(ticketSeatBlockEntity != null) {
+                CompoundTag nbtBlockData = new CompoundTag();
+                ticketSeatBlockEntity.saveAdditional(nbtBlockData);
+
+                CompoundTag ticketIdTag = player.getItemInHand(hand).getTag();
+
+                if(ticketIdTag != null) {
+                    long ticketId = ticketIdTag.getLong("id");
+                    for (long id : nbtBlockData.getLongArray("idList")) {
+                        if (id == ticketId) {
+                            return super.use(state, world, pos, player, hand, p_225533_6_);
+                        }
+                    }
+                }
+
+            }
+        }
+        return InteractionResult.PASS;
     }
 
-    public enum TicketIds implements StringRepresentable {
-        ID(new ArrayList<UUID>());
-        
-        public final List<UUID> ids;
-
-        private TicketIds(List<UUID> ticketIds) {
-            this.ids = ticketIds;
-        }
-
-        @Override
-        public String getSerializedName() {
-            return "ticketids";
-        }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new TicketSeatBlockEntity(pPos, pState);
     }
 }

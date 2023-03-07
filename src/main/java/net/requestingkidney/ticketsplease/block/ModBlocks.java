@@ -12,9 +12,7 @@ import static com.simibubi.create.AllMovementBehaviours.movementBehaviour;
 import static com.simibubi.create.foundation.data.TagGen.axeOnly;
 import static com.simibubi.create.content.logistics.block.display.AllDisplayBehaviours.assignDataBehaviour;
 
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.minecraft.core.Registry;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import static net.requestingkidney.ticketsplease.TicketsPlease.REGISTRATE;
 
@@ -33,9 +31,8 @@ public class ModBlocks {
                 .onRegister(movementBehaviour(movementBehaviour))
                 .onRegister(interactionBehaviour(interactionBehaviour))
                 .onRegister(assignDataBehaviour(new EntityNameDisplaySource(), "entity_name"))
-                .onRegisterAfter(Registry.ITEM_REGISTRY, v -> TooltipHelper.referTo(v, "block.create.brown_seat"))
+                .onRegisterAfter(Registry.ITEM_REGISTRY, v -> TooltipHelper.referTo(v, "block.ticketsplease.brown_ticketseat"))
                 .item()
-                .tab(NonNullSupplier.of(() -> CreativeModeTab.TAB_MISC))
                 .build()
                 .register();
     });
