@@ -1,45 +1,34 @@
 package net.requestingkidney.ticketsplease.block.ticketseat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.simibubi.create.content.contraptions.components.actors.SeatBlock;
 
-import net.minecraft.util.StringRepresentable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+
+import net.minecraft.world.phys.BlockHitResult;
+import net.requestingkidney.ticketsplease.block.entity.ticketseat.TicketSeatBlockEntity;
 
 
-public class TicketSeatBlock extends SeatBlock {
-
-    //public static final EnumProperty<TicketIds> TICKET_IDS = EnumProperty.create("ticketids", TicketIds.class);
+public class TicketSeatBlock extends SeatBlock implements EntityBlock {
 
     public TicketSeatBlock(Properties pProperties, DyeColor color, boolean inCreativeTab) {
         super(pProperties, color, inCreativeTab);
     }
-    
+
     @Override
-    protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
-        //pBuilder.add(TICKET_IDS);
-        super.createBlockStateDefinition(pBuilder);
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult p_225533_6_) {
+        return super.use(state, world, pos, player, hand, p_225533_6_);
     }
 
-    public enum TicketIds implements StringRepresentable {
-        ID(new ArrayList<UUID>());
-        
-        public final List<UUID> ids;
-
-        private TicketIds(List<UUID> ticketIds) {
-            this.ids = ticketIds;
-        }
-
-        @Override
-        public String getSerializedName() {
-            return "ticketids";
-        }
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new TicketSeatBlockEntity(pPos, pState);
     }
 }
